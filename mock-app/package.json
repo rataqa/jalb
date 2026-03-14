@@ -14,8 +14,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@rataqa/jalb": "^1.0.0",
-    "@rataqa/sijil": "^1.0.2",
+    "@rataqa/jalb": "^1.0.1",
+    "@rataqa/sijil": "^1.0.3",
     "express": "^5.2.1"
   },
   "devDependencies": {
