@@ -1,25 +1,29 @@
 import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
-import { HttpAgent, HttpsAgent } from 'agentkeepalive';
+import { HttpOptions, HttpsOptions } from 'agentkeepalive';
 import { IBasicLogger } from '@rataqa/sijil';
 
 import { makeHttpAgent, makeHttpsAgent } from './agent';
 import { IAxiosFactory, IHttpRequestHeaders } from './types';
 
-const defaultConfig: CreateAxiosDefaults = {
+const defaultAxiosOptions: CreateAxiosDefaults = {
   timeout: 60_000,
+  headers: {},
 };
 
 export function makeAxiosFactory(
   baseURL: string,
-  config: CreateAxiosDefaults = {},
+  axiosOptions: CreateAxiosDefaults = {},
   logger: IBasicLogger | null = null,
+  httpAgentOptions: HttpOptions = {},
+  httpsAgentOptions: HttpsOptions = {},
 ): IAxiosFactory {
 
-  const isHttps = baseURL.toLowerCase().startsWith('https://');
-  let httpAgent: HttpAgent | null = null, httpsAgent: HttpsAgent | null = null;
+  const mergedAxiosOptions = { ...defaultAxiosOptions, baseURL, ...axiosOptions };
 
-  if (!config.httpAgent && !isHttps) httpAgent = makeHttpAgent();
-  if (!config.httpsAgent && isHttps) httpsAgent = makeHttpsAgent();
+  const isHttps = mergedAxiosOptions.baseURL.toLowerCase().startsWith('https://');
+
+  if (!mergedAxiosOptions.httpAgent && !isHttps) mergedAxiosOptions.httpAgent = makeHttpAgent(httpAgentOptions);
+  if (!mergedAxiosOptions.httpsAgent && isHttps) mergedAxiosOptions.httpsAgent = makeHttpsAgent(httpsAgentOptions);
 
   const defaultHttpClient = makeHttpClient();
   if (logger) {
@@ -36,42 +40,44 @@ export function makeAxiosFactory(
   }
 
   function useLogger(ax: AxiosInstance, l: IBasicLogger) {
-    ax.interceptors.request.use((req) => {
-      const { method, url, params: query, headers, data: body = null } = req;
-      l.info('axios request', { method, url, query, headers, body });
-      return req;
-    });
+    ax.interceptors.request.use(
+      function handleRequest(req) {
+        const { method, url, params: query, headers, data: body = null } = req;
+        l.info('outgoing http request', { method, url, query, headers, body });
+        return req;
+      }
+    );
 
     ax.interceptors.response.use(
       function handleResponse(res) {
         const { status, data: body, headers, config: { method, url } } = res;
-        l.info('axios response', { method, url, status, headers, body });
+        l.info('incoming http response', { method, url, status, headers, body });
         return res;
       },
       function handleError(err) {
         if (err.response) {
           const { status, data: body, headers, config: { method, url } } = err.response;
-          l.error('axios response error', { method, url, status, headers, body });
+          l.error('incoming http response error', { method, url, status, headers, body });
         }
         return Promise.reject(err);
       }
     );
   }
 
-  function makeHttpClient(headers: IHttpRequestHeaders = {}) {
-    return axios.create({ baseURL, ...defaultConfig, httpAgent, httpsAgent, headers, ...config });
+  function makeHttpClient(headersOverride: IHttpRequestHeaders = {}) {
+    let { headers, ...otherOptions } = mergedAxiosOptions;
+    headers = { ...headers, ...headersOverride };
+    return axios.create({ ...otherOptions, headers });
   }
 
   function makeAxiosPerRequest(headers: IHttpRequestHeaders, l: IBasicLogger) {
-    const _http = makeHttpClient(headers);
-    useLogger(_http, l);
-    return _http;
+    const http = makeHttpClient(headers);
+    useLogger(http, l);
+    return http;
   }
 
   return {
     defaultHttpClient,
-    httpAgent,
-    httpsAgent,
     makeAxiosPerRequest,
     makeHttpClient,
     useLogger,

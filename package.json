@@ -1,6 +1,6 @@
 {
   "name": "@rataqa/jalb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTTP client that combines modern and popular libs",
   "type": "commonjs",
   "main": "dist/index.js",

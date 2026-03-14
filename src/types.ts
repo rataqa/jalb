@@ -1,5 +1,4 @@
 import { IBasicLogger } from '@rataqa/sijil';
-import { HttpAgent, HttpsAgent } from 'agentkeepalive';
 import { AxiosInstance } from 'axios';
 
 export interface IObject {
@@ -11,18 +10,16 @@ export interface IAppInfo {
   appVersion: string;
 }
 
-export interface IHttpRequestContext extends IObject {
+export interface IHttpRequestContext {
   correlation_id: string;
 }
 
 export interface IHttpRequestHeaders {
-  [key: string]: string | string[];
+  [key: string]: string | string[] | number;
 }
 
 export interface IAxiosFactory {
   defaultHttpClient: AxiosInstance;
-  httpAgent: HttpAgent | null;
-  httpsAgent: HttpsAgent | null;
   makeAxiosPerRequest: (headers: IHttpRequestHeaders, logger: IBasicLogger) => AxiosInstance;
   makeHttpClient: (headers?: IHttpRequestHeaders) => AxiosInstance;
   useLogger: (ax: AxiosInstance, l: IBasicLogger) => void;

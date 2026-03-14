@@ -26,8 +26,8 @@ describe('axios', () => {
     equal(String(res2.data).includes('Example Domain'), true, 'makeAxios should be able to make a request to the server');
   });
 
-  it.skip('should make axios for HTTPS', async () => {
-    const f = makeAxiosFactory('https://example.com');
+  it('should make axios for HTTPS', async () => {
+    const f = makeAxiosFactory('https://example.com', {}, null, {}, { rejectUnauthorized: false });
     equal(typeof f, 'object', 'makeAxios should return an object');
     equal(typeof f.defaultHttpClient.get, 'function', 'makeAxios should have an http property that is an object');
     const res = await f.defaultHttpClient.get('/');
