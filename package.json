@@ -1,0 +1,47 @@
+{
+  "name": "@rataqa/jalb",
+  "version": "1.0.1",
+  "description": "HTTP client that combines modern and popular libs",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build:ts": "tsc --project tsconfig.build.json",
+    "build": "npm-run-all clean build:ts",
+    "test": "node -r ts-node/register --test src/__tests__/*.test.ts",
+    "test:coverage": "node -r ts-node/register --experimental-test-coverage --test src/__tests__/*.test.ts"
+  },
+  "dependencies": {
+    "@rataqa/sijil": "^1.0.3",
+    "agentkeepalive": "^4.6.0",
+    "axios": "^1.13.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^6.1.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "homepage": "https://github.com/rataqa/jalb#readme",
+  "bugs": {
+    "url": "https://github.com/rataqa/jalb/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rataqa/jalb.git"
+  },
+  "license": "MIT",
+  "author": "Rataqa Team",
+  "keywords": [
+    "http",
+    "client",
+    "axios",
+    "agentkeepalive",
+    "pino"
+  ]
+}
