@@ -4,7 +4,7 @@ import { makeLogger } from '@rataqa/sijil';
 
 import { makeAxiosFactory } from '../axios';
 
-describe('axios', () => {
+describe('jalb', () => {
 
   it('should make axios for HTTP', async () => {
     const logger = makeLogger('pino', { appName: 'axios test', appVersion: '1.0.0' });
