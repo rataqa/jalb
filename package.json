@@ -1,6 +1,6 @@
 {
   "name": "@rataqa/jalb",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "HTTP client that combines modern and popular libs",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -18,7 +18,7 @@
   "dependencies": {
     "@rataqa/sijil": "^1.0.4",
     "agentkeepalive": "^4.6.0",
-    "axios": "^1.13.6"
+    "axios": "^1.15.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
